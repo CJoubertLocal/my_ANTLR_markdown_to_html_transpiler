@@ -6,7 +6,7 @@ grammar myMDToHTML;
 
 mdfile                  : sentence+ EOF ;
 
-sentence                : markdownItem+  NEWLINE* ;
+sentence                : markdownItem+  NEWLINE+ ;
 
 markdownItem            : header
                         | codeBlock
@@ -20,7 +20,7 @@ markdownItem            : header
                         | default+
                         ;
 
-header                  : '#'+ (pound | default)+ NEWLINE ;
+header                  : '#'+ (pound | default)+ ;
 
 codeBlock               : '```' WORD NEWLINE codeBlockLine+ '```'                # multilineCodeBlock // have all backquotes within a single string to avoid a mix-up with an inline code block
                         | ('``' | '`' default+ '`')                              # inlineCodeBlock
@@ -38,17 +38,17 @@ footnote                : '[' '^' NUMBER ']' ':' footnoteSentence               
 
 image                   : '!' '[' '[' imageName ']' ']' ;
 
-list                    : NEWLINE+ ('-' listLine)+ NEWLINE ;
+list                    : ('-' listLine)+ ;
 
-listLine                : (codeBlock | italicsAndBold | bold | italics | footnote | default)+ NEWLINE* ;
-
+listLine                : (codeBlock | italicsAndBold | bold | italics | footnote | default)+ NEWLINE ;
+// The NEWLINE here requires that all lists at the end of a file have two NEWLINES if immediately before EOF. Otherwise, one NEWLINE before a new markdown item.
 table                   : tableHeader tableBorder tableBodyRow+ ;
 
 tableHeader             : '|' (tableHeaderCell+ '|')+ NEWLINE ;
 
 tableBorder             : '|' ('-'+ '|')+ NEWLINE ;
 
-tableBodyRow            : '|' (tableCell '|')+ NEWLINE ;
+tableBodyRow            : '|' (tableCell '|')+ NEWLINE? ;
 
 tableHeaderCell         : default+ ;
 
@@ -99,9 +99,9 @@ asterisk                : '*' ;
  * Lexer Rules
  */
 
-NUMBER                  : DIGITS+ ;
+NUMBER                  : [0-9]+ ;
 
-WORD                    : (UPPERCASE | LOWERCASE | '_')+ ;
+WORD                    : ([a-zA-Z] | '_')+ ;
 
 WHITESPACE              : (' ' | '\t') ;
 
@@ -111,9 +111,3 @@ WORDNUMBERWHITESPACE    : WORD
                         | NUMBER
                         | WHITESPACE
                         ;
-
-POUND                   : '#' ;
-
-fragment LOWERCASE      : [a-z] ;
-fragment UPPERCASE      : [A-Z] ;
-fragment DIGITS         : [0-9] ;

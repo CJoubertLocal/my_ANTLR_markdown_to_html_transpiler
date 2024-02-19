@@ -7,9 +7,12 @@ import java.util.HashMap;
 
 public class HtmlMdListener implements myMDToHTMLListener {
     private final StringBuilder OutString = new StringBuilder();
-    private HashMap<String, String> htmlEntityMap = new HashMap<String, String>();
+    private final HashMap<String, String> htmlEntityMap = new HashMap<String, String>();
     private int currentInlineFootnoteNumber = 1;
-    private HashMap<Integer, Integer> footnoteMap = new HashMap<Integer, Integer>();
+    private final HashMap<Integer, Integer> footnoteMap = new HashMap<Integer, Integer>();
+    private boolean addingEndNotes = false;
+    private final StringBuilder currentEndNoteString = new StringBuilder();
+    private final HashMap<Integer, String> endNotes = new HashMap<Integer, String>();
     private int currentHeaderCount = 0;
     public HtmlMdListener() {
         this.htmlEntityMap.put("\"", "&quot;");
@@ -33,6 +36,25 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
     @Override
     public void exitMdfile(myMDToHTMLParser.MdfileContext ctx) {
+        if (addingEndNotes) {
+            for (int i = 1; i < currentInlineFootnoteNumber; i++) {
+                this.OutString
+                        .append("<p id=\"footnote-")
+                        .append(i)
+                        .append("\">\n")
+                        .append("<a href=\"#footnote-anchor-")
+                        .append(i)
+                        .append("\">\n")
+                        .append("[")
+                        .append(i)
+                        .append("]\n</a>\n");
+
+                this.OutString.append(endNotes.get(i));
+
+                this.OutString.append("</p>\n");
+            }
+            this.OutString.append("</p>\n");
+        }
         this.OutString.append("</body>\n</html>");
     }
 
@@ -43,7 +65,9 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
     @Override
     public void exitSentence(myMDToHTMLParser.SentenceContext ctx) {
-        this.OutString.append("\n</p>\n");
+        if (!addingEndNotes) {
+            this.OutString.append("\n</p>\n");
+        }
     }
 
     @Override
@@ -109,62 +133,85 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
     @Override
     public void enterItalicsAndBold(myMDToHTMLParser.ItalicsAndBoldContext ctx) {
-        this.OutString.append("<i>\n<b>\n");
+        if (addingEndNotes) {
+            this.currentEndNoteString.append("<i>\n<b>\n");
+        } else {
+            this.OutString.append("<i>\n<b>\n");
+        }
     }
 
     @Override
     public void exitItalicsAndBold(myMDToHTMLParser.ItalicsAndBoldContext ctx) {
         skipAsterisks(ctx.children);
-        this.OutString.append("</b>\n</i>\n");
+        if (addingEndNotes) {
+            this.currentEndNoteString.append("</b>\n</i>\n");
+        } else {
+            this.OutString.append("</b>\n</i>\n");
+        }
     }
 
     private void skipAsterisks(java.util.List<org.antlr.v4.runtime.tree.ParseTree> ctxChildren) {
         for (org.antlr.v4.runtime.tree.ParseTree c : ctxChildren) {
             if (!Objects.equals(c.getText(), "*")) {
-                this.OutString.append(c.getText());
+                if (addingEndNotes) {
+                    this.currentEndNoteString.append(c.getText());
+
+                } else {
+                    this.OutString.append(c.getText());
+                }
             }
         }
     }
 
     @Override
     public void enterBold(myMDToHTMLParser.BoldContext ctx) {
-        this.OutString.append("<b>\n");
+        if (addingEndNotes) {
+            this.currentEndNoteString.append("<b>\n");
+        } else {
+            this.OutString.append("<b>\n");
+        }
     }
 
     @Override
     public void exitBold(myMDToHTMLParser.BoldContext ctx) {
         skipAsterisks(ctx.children);
-        this.OutString.append("</b>\n");
+        if (addingEndNotes) {
+            this.currentEndNoteString.append("</b>\n");
+        } else {
+            this.OutString.append("</b>\n");
+        }
     }
 
     @Override
     public void enterItalics(myMDToHTMLParser.ItalicsContext ctx) {
-        this.OutString.append("<i>\n");
+        if (addingEndNotes) {
+            this.currentEndNoteString.append("<i>\n");
+        } else {
+            this.OutString.append("<i>\n");
+        }
     }
 
     @Override
     public void exitItalics(myMDToHTMLParser.ItalicsContext ctx) {
         skipAsterisks(ctx.children);
-        this.OutString.append("</i>\n");
+        if (addingEndNotes) {
+            this.currentEndNoteString.append("</i>\n");
+        } else {
+            this.OutString.append("</i>\n");
+        }
     }
 
     @Override
     public void enterEndOfFileFootnote(myMDToHTMLParser.EndOfFileFootnoteContext ctx) {
-        this.OutString
-                .append("<p id=\"footnote-")
-                .append(ctx.NUMBER())
-                .append("\">\n")
-                .append("<a href=\"#footnote-anchor-")
-                .append(ctx.NUMBER())
-                .append("\">\n")
-                .append("[")
-                .append(ctx.NUMBER())
-                .append("]\n</a>\n");
+        if (!addingEndNotes) {
+            addingEndNotes = true;
+        }
     }
 
     @Override
     public void exitEndOfFileFootnote(myMDToHTMLParser.EndOfFileFootnoteContext ctx) {
-        this.OutString.append("</p>\n");
+        this.endNotes.put(this.footnoteMap.get(Integer.valueOf(ctx.NUMBER().toString())), this.currentEndNoteString.toString());
+        this.currentEndNoteString.setLength(0); //https://stackoverflow.com/questions/5192512/how-can-i-clear-or-empty-a-stringbuilder
     }
 
     @Override
@@ -173,7 +220,8 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
     @Override
     public void exitInlineFootnote(myMDToHTMLParser.InlineFootnoteContext ctx) {
-        footnoteMap.put(Integer.getInteger(ctx.NUMBER().toString()), currentInlineFootnoteNumber);
+        footnoteMap.put(Integer.valueOf(ctx.NUMBER().toString()), currentInlineFootnoteNumber);
+
         this.OutString
                 .append("<a id=\"footnote-anchor-")
                 .append(currentInlineFootnoteNumber)
@@ -228,7 +276,11 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
     @Override
     public void exitPound(myMDToHTMLParser.PoundContext ctx) {
-        this.OutString.append("#");
+        if (addingEndNotes) {
+            this.currentEndNoteString.append("#");
+        } else {
+            this.OutString.append("#");
+        }
     }
 
     @Override
@@ -340,10 +392,22 @@ public class HtmlMdListener implements myMDToHTMLListener {
     public void exitDefault(myMDToHTMLParser.DefaultContext ctx) {
         for (org.antlr.v4.runtime.tree.ParseTree c : ctx.children) {
             if (htmlEntityMap.containsKey(c.getText())) {
-                this.OutString.append(htmlEntityMap.get(c.getText()));
+
+                if (addingEndNotes) {
+                    this.currentEndNoteString.append(htmlEntityMap.get(c.getText()));
+
+                } else {
+                    this.OutString.append(htmlEntityMap.get(c.getText()));
+                }
 
             } else {
-                this.OutString.append(c.getText());
+
+                if (addingEndNotes) {
+                    this.currentEndNoteString.append(c.getText());
+
+                } else {
+                    this.OutString.append(c.getText());
+                }
             }
         }
     }
