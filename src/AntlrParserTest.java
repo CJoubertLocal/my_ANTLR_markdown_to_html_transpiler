@@ -410,6 +410,16 @@ class AntlrParserTest {
         );
         assertEquals(
                 htmlStart +
+                "A sentence!</p><p><ul><li> <a href=\"to somewhere\">a link</a></li><li> a point</li></ul>" +
+                htmlEnd,
+                removeNewLineChars(
+                        AntlrParser.transpileMDToHTML(
+                                "A sentence!\n\n- [a link](to somewhere)\n- a point\n\n", ""
+                        )
+                )
+        );
+        assertEquals(
+                htmlStart +
                 "<h1> A header with html &lt; &gt; &quot; &apos; &ndash; elements</h1>" +
                 htmlEnd,
                 removeNewLineChars(
