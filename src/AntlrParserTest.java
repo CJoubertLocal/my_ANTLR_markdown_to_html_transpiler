@@ -15,16 +15,18 @@ class AntlrParserTest {
         assertEquals(
                 "",
                 removeNewLineChars(AntlrParser.transpileMDToHTML(
-                        ""
-                ))
+                        "", ""
+                )
+            )
         );
         assertEquals(
             htmlStart +
                     "This is a plain text file." +
                     htmlEnd,
                 removeNewLineChars(AntlrParser.transpileMDToHTML(
-                        "This is a plain text file.\n"
-                ))
+                        "This is a plain text file.\n", ""
+                )
+            )
         );
         assertEquals(
                 htmlStart +
@@ -32,7 +34,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "# This is an h1 header\n"
+                                "# This is an h1 header\n", ""
                         )
                 )
         );
@@ -42,7 +44,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "## This is an h2 header\n"
+                                "## This is an h2 header\n", ""
                         )
                 )
         );
@@ -52,7 +54,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "### This is an h3 header\n"
+                                "### This is an h3 header\n", ""
                         )
                 )
         );
@@ -62,7 +64,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "### This is an ### h3 ### header\n"
+                                "### This is an ### h3 ### header\n", ""
                         )
                 )
         );
@@ -72,7 +74,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "This\nis\nsome simple text\nwhich has been spread out\nacross multiple lines.\n"
+                                "This\nis\nsome simple text\nwhich has been spread out\nacross multiple lines.\n", ""
                         )
                 )
         );
@@ -82,7 +84,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "This is a first line.\n\nParagraph one.\n"
+                                "This is a first line.\n\nParagraph one.\n", ""
                         )
                 )
         );
@@ -92,7 +94,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "This is a first line.\n\nParagraph one.\n\nParagraph two.\n"
+                                "This is a first line.\n\nParagraph one.\n\nParagraph two.\n", ""
                         )
                 )
         );
@@ -102,7 +104,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "*italic text*\n"
+                                "*italic text*\n", ""
                         )
                 )
         );
@@ -112,7 +114,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "**bold text**\n"
+                                "**bold text**\n", ""
                         )
                 )
         );
@@ -122,7 +124,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "***bold text***\n"
+                                "***bold text***\n", ""
                         )
                 )
         );
@@ -132,7 +134,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "This is a file ' which is <filled> with - HTML \"entities\" of interest.\n"
+                                "This is a file ' which is <filled> with - HTML \"entities\" of interest.\n", ""
                         )
                 )
         );
@@ -142,7 +144,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "``\n"
+                                "``\n", ""
                         )
                 )
         );
@@ -152,7 +154,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "`This is a simple inline code block`\n"
+                                "`This is a simple inline code block`\n", ""
                         )
                 )
         );
@@ -162,7 +164,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "This is some text surrounding `and inline code block`.\n"
+                                "This is some text surrounding `and inline code block`.\n", ""
                         )
                 )
         );
@@ -172,7 +174,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "This file contains `a code block` with `a number of ' <> - \" ` html entities in it.\n"
+                                "This file contains `a code block` with `a number of ' <> - \" ` html entities in it.\n", ""
                         )
                 )
         );
@@ -182,7 +184,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "```programming_language\nThis is a multiline code block.\nLine one,\nLine two,\nLine three.\n```\n"
+                                "```programming_language\nThis is a multiline code block.\nLine one,\nLine two,\nLine three.\n```\n", ""
                         )
                 )
         );
@@ -192,7 +194,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "```someprogramminglanguage\nThis is a line.\n\nHere is another line. It should not be in paragraph tags.\n\nA final line.\n```\n"
+                                "```someprogramminglanguage\nThis is a line.\n\nHere is another line. It should not be in paragraph tags.\n\nA final line.\n```\n", ""
                         )
                 )
         );
@@ -202,7 +204,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "This is a line.\n\nParagraph `with a code block` in it.\n"
+                                "This is a line.\n\nParagraph `with a code block` in it.\n", ""
                         )
                 )
         );
@@ -212,7 +214,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "This is a line.\n\nHere is a multi-line code block:\n\n```code\nLine one,\n\nLine two,\n\nline three.\n```\n\nThat's the end of the code block.\n"
+                                "This is a line.\n\nHere is a multi-line code block:\n\n```code\nLine one,\n\nLine two,\n\nline three.\n```\n\nThat's the end of the code block.\n", ""
                         )
                 )
         );
@@ -222,7 +224,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "```dir\n- dashboard\n| - frontend\n| - backend\n```\n"
+                                "```dir\n- dashboard\n| - frontend\n| - backend\n```\n", ""
                         )
                 )
         );
@@ -232,7 +234,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "```js\nimport * as echarts from 'echarts';\n```\n"
+                                "```js\nimport * as echarts from 'echarts';\n```\n", ""
                         )
                 )
         );
@@ -242,7 +244,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "Here is a footnote.[^1]\n"
+                                "Here is a footnote.[^1]\n", ""
                         )
                 )
         );
@@ -252,7 +254,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "Here is a footnote[^1] and another footnote.[^2]\n"
+                                "Here is a footnote[^1] and another footnote.[^2]\n", ""
                         )
                 )
         );
@@ -262,7 +264,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "Here is a footnote[^2] and another footnote.[^1]\n"
+                                "Here is a footnote[^2] and another footnote.[^1]\n", ""
                         )
                 )
         );
@@ -272,7 +274,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "# This is a heading\n\nHere is a footnote.[^1]\n"
+                                "# This is a heading\n\nHere is a footnote.[^1]\n", ""
                         )
                 )
         );
@@ -282,7 +284,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "# This is a heading\n\nHere is a footnote.[^2] Here's another.[^1]\n"
+                                "# This is a heading\n\nHere is a footnote.[^2] Here's another.[^1]\n", ""
                         )
                 )
         );
@@ -292,7 +294,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "Throwaway line\n\nThis paragraph references a footnote.[^1]\n\n[^1]: This is the reference.\n"
+                                "Throwaway line\n\nThis paragraph references a footnote.[^1]\n\n[^1]: This is the reference.\n", ""
                         )
                 )
         );
@@ -302,7 +304,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "Throwaway line\n\nThis paragraph references a footnote.[^1]\n\nThis paragraph[^2] also has a footnote.\n\n[^1]: This is the reference.\n[^2]: This is a footnote.\n"
+                                "Throwaway line\n\nThis paragraph references a footnote.[^1]\n\nThis paragraph[^2] also has a footnote.\n\n[^1]: This is the reference.\n[^2]: This is a footnote.\n", ""
                         )
                 )
         );
@@ -312,7 +314,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "Throwaway line\n\nThis paragraph references a footnote.[^2]\n\nThis paragraph[^1] also has a footnote.\n\n[^1]: This is the reference.\n[^2]: This is a footnote.\n"
+                                "Throwaway line\n\nThis paragraph references a footnote.[^2]\n\nThis paragraph[^1] also has a footnote.\n\n[^1]: This is the reference.\n[^2]: This is a footnote.\n", ""
                         )
                 )
         );
@@ -322,7 +324,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "Throwaway line\n\nThis[^4] paragraph references a footnote.[^3]\n\nThis paragraph[^1] also has[^2] a footnote.\n\n[^1]: This is the reference.\n[^2]: This is a footnote.\n[^3]: Surprise!\n[^4]: Fourth note.\n"
+                                "Throwaway line\n\nThis[^4] paragraph references a footnote.[^3]\n\nThis paragraph[^1] also has[^2] a footnote.\n\n[^1]: This is the reference.\n[^2]: This is a footnote.\n[^3]: Surprise!\n[^4]: Fourth note.\n", ""
                         )
                 )
         );
@@ -332,7 +334,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "Throwaway line\n\nThis paragraph references a footnote.[^1]\n\n[^1]: This is the reference, it has a url: https://this-is-not-a-real-url.blue/database?query=#a-query.\n"
+                                "Throwaway line\n\nThis paragraph references a footnote.[^1]\n\n[^1]: This is the reference, it has a url: https://this-is-not-a-real-url.blue/database?query=#a-query.\n", ""
                         )
                 )
         );
@@ -342,7 +344,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "Throwaway line\n\n[^1]\n[^2]\n[^3]\n[^4]\n[^5]\n[^6]\n[^7]\n[^8]\n[^9]\n[^10]\n[^11]\n[^12]\n\n[^1]: 1\n[^2]: 2\n[^3]: 3\n[^4]: 4\n[^5]: 5\n[^6]: 6\n[^7]: 7\n[^8]: 8\n[^9]: 9\n[^10]: 10\n[^11]: 11\n[^12]: 12\n"
+                                "Throwaway line\n\n[^1]\n[^2]\n[^3]\n[^4]\n[^5]\n[^6]\n[^7]\n[^8]\n[^9]\n[^10]\n[^11]\n[^12]\n\n[^1]: 1\n[^2]: 2\n[^3]: 3\n[^4]: 4\n[^5]: 5\n[^6]: 6\n[^7]: 7\n[^8]: 8\n[^9]: 9\n[^10]: 10\n[^11]: 11\n[^12]: 12\n", ""
                         )
                 )
         );
@@ -352,7 +354,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "# Unordered List!\n\n- This is an unordered list with a - dash.\n- One,\n- Two,\n- Three.\n\n"
+                                "# Unordered List!\n\n- This is an unordered list with a - dash.\n- One,\n- Two,\n- Three.\n\n", ""
                         )
                 )
         );
@@ -362,7 +364,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "| col name one | col name two |\n|-|-|\n| row contents one | row contents two |\n"
+                                "| col name one | col name two |\n|-|-|\n| row contents one | row contents two |\n", ""
                         )
                 )
         );
@@ -372,7 +374,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "| col name one | col name two |\n|-|-|\n| A non-entity / | Some entities - ' |\n| < More entities > | \"And I quote...\" |\n"
+                                "| col name one | col name two |\n|-|-|\n| A non-entity / | Some entities - ' |\n| < More entities > | \"And I quote...\" |\n", ""
                         )
                 )
         );
@@ -382,7 +384,17 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "![[image_name.png]]\n"
+                                "![[image_name.png]]\n", ""
+                        )
+                )
+        );
+        assertEquals(
+                htmlStart +
+                "<figure class=\"image\"><img src=\"/some_path/image_name.png\"></figure>" +
+                htmlEnd,
+                removeNewLineChars(
+                        AntlrParser.transpileMDToHTML(
+                                "![[image_name.png]]\n", "/some_path/"
                         )
                 )
         );
@@ -392,7 +404,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "A sentence!\n"
+                                "A sentence!\n", ""
                         )
                 )
         );
@@ -402,7 +414,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "# A header with html < > \" ' - elements\n"
+                                "# A header with html < > \" ' - elements\n", ""
                         )
                 )
         );
@@ -412,7 +424,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "# Header\n\n- Unordered\n- List\n\nEnd of file.\n"
+                                "# Header\n\n- Unordered\n- List\n\nEnd of file.\n", ""
                         )
                 )
         );
@@ -422,7 +434,17 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "For example:\n\n- paragraphs[^1]\n- \"0 < 1\"\n- \"2 > 1\"\n- **and**\n- ***headings***\n- `Code blocks`\n\n"
+                                "For example:\n\n- paragraphs[^1]\n- \"0 < 1\"\n- \"2 > 1\"\n- **and**\n- ***headings***\n- `Code blocks`\n\n", ""
+                        )
+                )
+        );
+        assertEquals(
+                htmlStart +
+                "For example:</p><p><code>Code @ blocks</code>" +
+                htmlEnd,
+                removeNewLineChars(
+                        AntlrParser.transpileMDToHTML(
+                                "For example:\n\n`Code @ blocks`\n", ""
                         )
                 )
         );
@@ -432,7 +454,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "# Introduction\n\n![[image_name.png]]\n\nFor example:\n"
+                                "# Introduction\n\n![[image_name.png]]\n\nFor example:\n", ""
                         )
                 )
         );
@@ -442,7 +464,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "# Introduction\n\n## A Small File\n\nThis is a *small* file.\n"
+                                "# Introduction\n\n## A Small File\n\nThis is a *small* file.\n", ""
                         )
                 )
         );
@@ -452,7 +474,7 @@ class AntlrParserTest {
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
-                                "# Introduction\n\n## A Small File\n\nThis is a *small* file. It contains - neigh - requires the program to correctly translate a variety of different Obsidian Markdown elements into the HTML elements I want.\n\n![[image_name.png]]\n\nFor example:\n\n- paragraphs[^1]\n- \"0 < 1\"\n- \"2 > 1\"\n- **and**\n- ***headings***\n- `Code blocks`\n\n```Pseudocode\nfn removeCharacterFromList(remList list, charToRemove char) list {\n    match remList {\n        case x::[]:\n            match x {\n                charToRemove: []\n                _: x\n            }\n        case x::xs:\n            match x {\n                charToRemove: removeCharacterFromList(xs, charToRemove)\n                _: x::removeCharacterFromList(xs, charToRemove)\n            }\n    }\n}\n\nremoveCharacterFromList(['a', 'b', 'c'], 'a')\n```\n\n## A table conclusion\n\nAnother footnote.[^2]\n\n| A table | must have | columns |\n|--|--|--|\n| and rows. | which may have an arbitrary amount of content | |\n\n[^1]: With footnotes!\n[^2]: Pseudocode.\n"
+                                "# Introduction\n\n## A Small File\n\nThis is a *small* file. It contains - neigh - requires the program to correctly translate a variety of different Obsidian Markdown elements into the HTML elements I want.\n\n![[image_name.png]]\n\nFor example:\n\n- paragraphs[^1]\n- \"0 < 1\"\n- \"2 > 1\"\n- **and**\n- ***headings***\n- `Code blocks`\n\n```Pseudocode\nfn removeCharacterFromList(remList list, charToRemove char) list {\n    match remList {\n        case x::[]:\n            match x {\n                charToRemove: []\n                _: x\n            }\n        case x::xs:\n            match x {\n                charToRemove: removeCharacterFromList(xs, charToRemove)\n                _: x::removeCharacterFromList(xs, charToRemove)\n            }\n    }\n}\n\nremoveCharacterFromList(['a', 'b', 'c'], 'a')\n```\n\n## A table conclusion\n\nAnother footnote.[^2]\n\n| A table | must have | columns |\n|--|--|--|\n| and rows. | which may have an arbitrary amount of content | |\n\n[^1]: With footnotes!\n[^2]: Pseudocode.\n", ""
                         )
                 )
         );

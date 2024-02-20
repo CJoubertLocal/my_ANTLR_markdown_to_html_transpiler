@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class AntlrParser {
 
-    public static String transpileMDToHTML(String mdToTranspile) {
+    public static String transpileMDToHTML(String mdToTranspile, String pathToImage) {
 
         if (mdToTranspile.isEmpty()) {
             return "";
@@ -20,7 +20,7 @@ public class AntlrParser {
 
         myMDToHTMLParser.setBuildParseTree(true);
         myMDToHTMLParser.MdfileContext tree = myMDToHTMLParser.mdfile();
-        HtmlMdListener htmlMD = new HtmlMdListener();
+        HtmlMdListener htmlMD = new HtmlMdListener(pathToImage);
         ParseTreeWalker.DEFAULT.walk(htmlMD, tree);
 
         return htmlMD.getOutString();

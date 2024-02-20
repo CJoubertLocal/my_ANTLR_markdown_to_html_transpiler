@@ -78,6 +78,7 @@ default                 : WORD
                         | '?'
                         | '='
                         | '!'
+                        | '@'
                         ;
 
 footnoteSentence        : (italicsAndBold | bold | italics | pound | default)+  NEWLINE* ;
@@ -92,8 +93,6 @@ pound                   : '#' ;
 verticalLine            : '|' ;
 
 asterisk                : '*' ;
-// '|'? is to prevent a conflict between a directory structure in a code block, and a table.
-// redundant omment now that default has '|'
 
 /*
  * Lexer Rules

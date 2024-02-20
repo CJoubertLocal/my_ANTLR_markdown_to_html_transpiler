@@ -10,15 +10,16 @@ public class Main {
         try {
             //https://www.baeldung.com/reading-file-in-java
             //https://www.baeldung.com/java-write-to-file
-            Path path = Paths.get(args[0]);
+            Path pathToFile = Paths.get(args[0]);
+            String pathToImageDirectory = args[1];
 
-            Stream<String> lines = Files.lines(path);
+            Stream<String> lines = Files.lines(pathToFile);
 
             String mdTextToTranspile = lines.collect(Collectors.joining("\n"));
             lines.close();
 
             BufferedWriter writer = new BufferedWriter(new FileWriter("html_out.html"));
-            writer.write(AntlrParser.transpileMDToHTML(mdTextToTranspile));
+            writer.write(AntlrParser.transpileMDToHTML(mdTextToTranspile, pathToImageDirectory));
 
             writer.close();
 

@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 public class HtmlMdListener implements myMDToHTMLListener {
     private final StringBuilder OutString = new StringBuilder();
+    private String imagePath = "/directory_name/";
     private final HashMap<String, String> htmlEntityMap = new HashMap<String, String>();
     private int currentInlineFootnoteNumber = 1;
     private final HashMap<Integer, Integer> footnoteMap = new HashMap<Integer, Integer>();
@@ -14,7 +15,7 @@ public class HtmlMdListener implements myMDToHTMLListener {
     private final StringBuilder currentEndNoteString = new StringBuilder();
     private final HashMap<Integer, String> endNotes = new HashMap<Integer, String>();
     private int currentHeaderCount = 0;
-    public HtmlMdListener() {
+    public HtmlMdListener(String pathToImageDirectory) {
         this.htmlEntityMap.put("\"", "&quot;");
         this.htmlEntityMap.put("&", "&amp;");
         this.htmlEntityMap.put("<", "&lt;");
@@ -22,6 +23,9 @@ public class HtmlMdListener implements myMDToHTMLListener {
         this.htmlEntityMap.put("-", "&ndash;");
         this.htmlEntityMap.put("'", "&apos;");
         this.htmlEntityMap.put("|", "&vert;");
+        if (!Objects.equals(pathToImageDirectory, "")) {
+            this.imagePath = pathToImageDirectory;
+        }
     }
 
     public String getOutString() {
@@ -243,7 +247,8 @@ public class HtmlMdListener implements myMDToHTMLListener {
     public void exitImage(myMDToHTMLParser.ImageContext ctx) {
         this.OutString
                 .append("<figure class=\"image\">\n")
-                .append("<img src=\"/directory_name/") // TODO: replace with user-provided path
+                .append("<img src=\"")
+                .append(imagePath)
                 .append(ctx.imageName().getText())
                 .append("\">\n")
                 .append("</figure>\n");
@@ -390,24 +395,22 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
     @Override
     public void exitDefault(myMDToHTMLParser.DefaultContext ctx) {
-        for (org.antlr.v4.runtime.tree.ParseTree c : ctx.children) {
-            if (htmlEntityMap.containsKey(c.getText())) {
+        if (htmlEntityMap.containsKey(ctx.getText())) {
 
-                if (addingEndNotes) {
-                    this.currentEndNoteString.append(htmlEntityMap.get(c.getText()));
-
-                } else {
-                    this.OutString.append(htmlEntityMap.get(c.getText()));
-                }
+            if (addingEndNotes) {
+                this.currentEndNoteString.append(htmlEntityMap.get(ctx.getText()));
 
             } else {
+                this.OutString.append(htmlEntityMap.get(ctx.getText()));
+            }
 
-                if (addingEndNotes) {
-                    this.currentEndNoteString.append(c.getText());
+        } else {
 
-                } else {
-                    this.OutString.append(c.getText());
-                }
+            if (addingEndNotes) {
+                this.currentEndNoteString.append(ctx.getText());
+
+            } else {
+                this.OutString.append(ctx.getText());
             }
         }
     }
