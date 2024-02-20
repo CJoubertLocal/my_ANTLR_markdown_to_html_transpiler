@@ -301,7 +301,7 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
     @Override
     public void exitDash(myMDToHTMLParser.DashContext ctx) {
-        this.OutString.append("-");
+        this.OutString.append(htmlEntityMap.get("-"));
     }
 
     @Override
