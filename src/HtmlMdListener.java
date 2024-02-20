@@ -7,22 +7,16 @@ import java.util.HashMap;
 
 public class HtmlMdListener implements myMDToHTMLListener {
     private final StringBuilder OutString = new StringBuilder();
-    
     private String imagePath = "/directory_name/";
     private final HashMap<String, String> htmlEntityMap = new HashMap<String, String>();
-    
     private int currentInlineFootnoteNumber = 1;
     private final HashMap<Integer, Integer> footnoteMap = new HashMap<Integer, Integer>();
-    
     private boolean addingTextBetweenAnchorBrackets = false;
     private final StringBuilder textBetweenAnchorBrackets = new StringBuilder();
-    
     private boolean addingEndNotes = false;
     private final StringBuilder currentEndNoteString = new StringBuilder();
     private final HashMap<Integer, String> endNotes = new HashMap<Integer, String>();
-    
     private int currentHeaderCount = 0;
-    
     public HtmlMdListener(String pathToImageDirectory) {
         this.htmlEntityMap.put("\"", "&quot;");
         this.htmlEntityMap.put("&", "&amp;");
@@ -154,24 +148,10 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
     @Override
     public void exitItalicsAndBold(myMDToHTMLParser.ItalicsAndBoldContext ctx) {
-        skipAsterisks(ctx.children);
         if (addingEndNotes) {
             this.currentEndNoteString.append("</b>\n</i>\n");
         } else {
             this.OutString.append("</b>\n</i>\n");
-        }
-    }
-
-    private void skipAsterisks(java.util.List<org.antlr.v4.runtime.tree.ParseTree> ctxChildren) {
-        for (org.antlr.v4.runtime.tree.ParseTree c : ctxChildren) {
-            if (!Objects.equals(c.getText(), "*")) {
-                if (addingEndNotes) {
-                    this.currentEndNoteString.append(c.getText());
-
-                } else {
-                    this.OutString.append(c.getText());
-                }
-            }
         }
     }
 
@@ -186,7 +166,6 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
     @Override
     public void exitBold(myMDToHTMLParser.BoldContext ctx) {
-        skipAsterisks(ctx.children);
         if (addingEndNotes) {
             this.currentEndNoteString.append("</b>\n");
         } else {
@@ -205,7 +184,6 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
     @Override
     public void exitItalics(myMDToHTMLParser.ItalicsContext ctx) {
-        skipAsterisks(ctx.children);
         if (addingEndNotes) {
             this.currentEndNoteString.append("</i>\n");
         } else {
@@ -317,6 +295,36 @@ public class HtmlMdListener implements myMDToHTMLListener {
     }
 
     @Override
+    public void enterDash(myMDToHTMLParser.DashContext ctx) {
+
+    }
+
+    @Override
+    public void exitDash(myMDToHTMLParser.DashContext ctx) {
+        this.OutString.append("-");
+    }
+
+    @Override
+    public void enterBackquote(myMDToHTMLParser.BackquoteContext ctx) {
+
+    }
+
+    @Override
+    public void exitBackquote(myMDToHTMLParser.BackquoteContext ctx) {
+        this.OutString.append("`");
+    }
+
+    @Override
+    public void enterCarat(myMDToHTMLParser.CaratContext ctx) {
+
+    }
+
+    @Override
+    public void exitCarat(myMDToHTMLParser.CaratContext ctx) {
+        this.OutString.append("^");
+    }
+
+    @Override
     public void enterList(myMDToHTMLParser.ListContext ctx) {
         this.OutString.append("\n<ul>\n");
     }
@@ -424,7 +432,7 @@ public class HtmlMdListener implements myMDToHTMLListener {
     public void exitLinkEnd(myMDToHTMLParser.LinkEndContext ctx) {
         this.OutString.append("\">").append(this.textBetweenAnchorBrackets.toString()).append("</a>\n");
     }
-    
+
     @Override
     public void enterDefault(myMDToHTMLParser.DefaultContext ctx) {
 
