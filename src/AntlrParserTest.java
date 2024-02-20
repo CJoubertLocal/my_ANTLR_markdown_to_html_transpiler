@@ -420,6 +420,16 @@ class AntlrParserTest {
         );
         assertEquals(
                 htmlStart +
+                "<h2> References:</h2><a id=\"footnote-anchor-1\" href=\"#footnote-1\">[1]</a></p><p><p id=\"footnote-1\"><a href=\"#footnote-anchor-1\">[1]</a> Terence Parr, ‘ANTLR’, 2024, https://www.antlr.org/.</p>" +
+                htmlEnd,
+                removeNewLineChars(
+                        AntlrParser.transpileMDToHTML(
+                                "## References:[^1]\n\n[^1]: Terence Parr, ‘ANTLR’, 2024, https://www.antlr.org/.\n", ""
+                        )
+                )
+        );
+        assertEquals(
+                htmlStart +
                 "<h1> A header with html &lt; &gt; &quot; &apos; &ndash; elements</h1>" +
                 htmlEnd,
                 removeNewLineChars(
