@@ -85,6 +85,8 @@ default                 : WORD
                         | '='
                         | '!'
                         | '@'
+                        | '‘'
+                        | '’'
                         ;
 
 footnoteSentence        : (italicsAndBold | bold | italics | pound | default)+  NEWLINE* ;
