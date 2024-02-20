@@ -40,7 +40,7 @@ image                   : '!' '[' '[' imageName ']' ']' ;
 
 list                    : ('-' listLine)+ ;
 
-listLine                : (codeBlock | italicsAndBold | bold | italics | footnote | default)+ NEWLINE ;
+listLine                : (codeBlock | italicsAndBold | bold | italics | footnote | link | default)+ NEWLINE ;
 // The NEWLINE here requires that all lists at the end of a file have two NEWLINES if immediately before EOF. Otherwise, one NEWLINE before a new markdown item.
 table                   : tableHeader tableBorder tableBodyRow+ ;
 
@@ -53,6 +53,12 @@ tableBodyRow            : '|' (tableCell '|')+ NEWLINE? ;
 tableHeaderCell         : default+ ;
 
 tableCell               : default+ ;
+
+link                    : linkStart linkEnd ;
+
+linkStart               : '[' default+ ']' ;
+
+linkEnd                 : '(' default+ ')' ;
 
 default                 : WORD
                         | NUMBER
