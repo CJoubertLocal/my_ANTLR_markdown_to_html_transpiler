@@ -17,20 +17,21 @@ markdownItem            : header
                         | table
                         | image
                         | list
+                        | link
                         | default+
                         ;
 
 header                  : '#'+ (pound | default)+ ;
 
-codeBlock               : '```' WORD NEWLINE codeBlockLine+ '```'                # multilineCodeBlock // have all backquotes within a single string to avoid a mix-up with an inline code block
-                        | ('``' | '`' default+ '`')                              # inlineCodeBlock
+codeBlock               : '```' WORD NEWLINE codeBlockLine+ '```'                          # multilineCodeBlock // have all backquotes within a single string to avoid a mix-up with an inline code block
+                        | ('``' | '`' (default | verticalLine | pound | asterisk)+ '`')    # inlineCodeBlock
                         ;
 
-italicsAndBold          : '*' '*' '*' (WORD | NUMBER | WHITESPACE)+ '*' '*' '*' ;
+italicsAndBold          : '*' '*' '*' (default | dash)+ '*' '*' '*' ;
 
-bold                    : '*' '*' (WORD | NUMBER | WHITESPACE)+ '*' '*' ;
+bold                    : '*' '*' (default | dash)+ '*' '*' ;
 
-italics                 : '*' (WORD | NUMBER | WHITESPACE)+ '*' ;
+italics                 : '*' (default | dash)+ '*' ;
 
 footnote                : '[' '^' NUMBER ']' ':' footnoteSentence                            # endOfFileFootnote
                         | '[' '^' NUMBER ']'                                                 # inlineFootnote
@@ -87,6 +88,10 @@ default                 : WORD
                         | '@'
                         | '‘'
                         | '’'
+                        | '+'
+                        | '\\'
+                        | '&'
+                        | '%'
                         ;
 
 footnoteSentence        : (italicsAndBold | bold | italics | pound | default)+  NEWLINE* ;
@@ -94,13 +99,19 @@ footnoteSentence        : (italicsAndBold | bold | italics | pound | default)+  
 
 imageName               : (WORD | '_')+ '.' WORD+ ;
 
-codeBlockLine           : (default | verticalLine | asterisk)* NEWLINE ;
+codeBlockLine           : (default | verticalLine | asterisk | pound | backquote | carat)* NEWLINE ;
 
 pound                   : '#' ;
 
 verticalLine            : '|' ;
 
 asterisk                : '*' ;
+
+dash                    : '-' ;
+
+backquote               : '`' ;
+
+carat                   : '^' ;
 
 /*
  * Lexer Rules
