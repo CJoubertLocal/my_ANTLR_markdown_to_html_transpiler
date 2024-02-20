@@ -7,14 +7,22 @@ import java.util.HashMap;
 
 public class HtmlMdListener implements myMDToHTMLListener {
     private final StringBuilder OutString = new StringBuilder();
+    
     private String imagePath = "/directory_name/";
     private final HashMap<String, String> htmlEntityMap = new HashMap<String, String>();
+    
     private int currentInlineFootnoteNumber = 1;
     private final HashMap<Integer, Integer> footnoteMap = new HashMap<Integer, Integer>();
+    
+    private boolean addingTextBetweenAnchorBrackets = false;
+    private final StringBuilder textBetweenAnchorBrackets = new StringBuilder();
+    
     private boolean addingEndNotes = false;
     private final StringBuilder currentEndNoteString = new StringBuilder();
     private final HashMap<Integer, String> endNotes = new HashMap<Integer, String>();
+    
     private int currentHeaderCount = 0;
+    
     public HtmlMdListener(String pathToImageDirectory) {
         this.htmlEntityMap.put("\"", "&quot;");
         this.htmlEntityMap.put("&", "&amp;");
@@ -389,6 +397,35 @@ public class HtmlMdListener implements myMDToHTMLListener {
     }
 
     @Override
+    public void enterLink(myMDToHTMLParser.LinkContext ctx) {
+
+    }
+
+    @Override
+    public void exitLink(myMDToHTMLParser.LinkContext ctx) {
+    }
+
+    @Override
+    public void enterLinkStart(myMDToHTMLParser.LinkStartContext ctx) {
+        this.addingTextBetweenAnchorBrackets = true;
+    }
+
+    @Override
+    public void exitLinkStart(myMDToHTMLParser.LinkStartContext ctx) {
+        this.addingTextBetweenAnchorBrackets = false;
+    }
+
+    @Override
+    public void enterLinkEnd(myMDToHTMLParser.LinkEndContext ctx) {
+        this.OutString.append("<a href=\"");
+    }
+
+    @Override
+    public void exitLinkEnd(myMDToHTMLParser.LinkEndContext ctx) {
+        this.OutString.append("\">").append(this.textBetweenAnchorBrackets.toString()).append("</a>\n");
+    }
+    
+    @Override
     public void enterDefault(myMDToHTMLParser.DefaultContext ctx) {
 
     }
@@ -400,6 +437,9 @@ public class HtmlMdListener implements myMDToHTMLListener {
             if (addingEndNotes) {
                 this.currentEndNoteString.append(htmlEntityMap.get(ctx.getText()));
 
+            } else if (addingTextBetweenAnchorBrackets) {
+                textBetweenAnchorBrackets.append(htmlEntityMap.get(ctx.getText()));
+
             } else {
                 this.OutString.append(htmlEntityMap.get(ctx.getText()));
             }
@@ -408,6 +448,9 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
             if (addingEndNotes) {
                 this.currentEndNoteString.append(ctx.getText());
+
+            } else if (addingTextBetweenAnchorBrackets) {
+                textBetweenAnchorBrackets.append(ctx.getText());
 
             } else {
                 this.OutString.append(ctx.getText());
