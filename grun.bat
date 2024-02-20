@@ -1,0 +1,1 @@
+java -cp "C:\Program Files\Java\jdk-18.0.2.1\lib\antlr-4.13.1-complete.jar" org.antlr.v4.gui.TestRig %*
