@@ -6,17 +6,25 @@ import java.util.Objects;
 import java.util.HashMap;
 
 public class HtmlMdListener implements myMDToHTMLListener {
+    
     private final StringBuilder OutString = new StringBuilder();
+    
     private String imagePath = "/directory_name/";
+    
     private final HashMap<String, String> htmlEntityMap = new HashMap<String, String>();
+    
     private int currentInlineFootnoteNumber = 1;
     private final HashMap<Integer, Integer> footnoteMap = new HashMap<Integer, Integer>();
+    
     private boolean addingTextBetweenAnchorBrackets = false;
     private final StringBuilder textBetweenAnchorBrackets = new StringBuilder();
+    
     private boolean addingEndNotes = false;
     private final StringBuilder currentEndNoteString = new StringBuilder();
     private final HashMap<Integer, String> endNotes = new HashMap<Integer, String>();
+    
     private int currentHeaderCount = 0;
+    
     public HtmlMdListener(String pathToImageDirectory) {
         this.htmlEntityMap.put("\"", "&quot;");
         this.htmlEntityMap.put("&", "&amp;");
@@ -25,6 +33,7 @@ public class HtmlMdListener implements myMDToHTMLListener {
         this.htmlEntityMap.put("-", "&ndash;");
         this.htmlEntityMap.put("'", "&apos;");
         this.htmlEntityMap.put("|", "&vert;");
+        
         if (!Objects.equals(pathToImageDirectory, "")) {
             this.imagePath = pathToImageDirectory;
         }
@@ -37,7 +46,7 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
     @Override
     public void enterMdfile(myMDToHTMLParser.MdfileContext ctx) {
-        this.OutString.append("<html>\n<head>\n<meta charset=\"UTF-8\"/>\n</head>\n<body>\n");
+        this.OutString.append("<html>\n<head>\n<meta charset=\"UTF-8\"/>\n</head>\n<body>\n<div class=\"content\">");
     }
 
     @Override
@@ -61,7 +70,7 @@ public class HtmlMdListener implements myMDToHTMLListener {
             }
             this.OutString.append("</p>\n");
         }
-        this.OutString.append("</body>\n</html>");
+        this.OutString.append("</div>\n</body>\n</html>");
     }
 
     @Override
@@ -261,6 +270,16 @@ public class HtmlMdListener implements myMDToHTMLListener {
     }
 
     @Override
+    public void enterBoldItalicsInterior(myMDToHTMLParser.BoldItalicsInteriorContext ctx) {
+
+    }
+
+    @Override
+    public void exitBoldItalicsInterior(myMDToHTMLParser.BoldItalicsInteriorContext ctx) {
+
+    }
+
+    @Override
     public void enterPound(myMDToHTMLParser.PoundContext ctx) {
 
     }
@@ -301,7 +320,15 @@ public class HtmlMdListener implements myMDToHTMLListener {
 
     @Override
     public void exitDash(myMDToHTMLParser.DashContext ctx) {
-        this.OutString.append(htmlEntityMap.get("-"));
+        if (addingEndNotes) {
+            this.currentEndNoteString.append("-");
+
+        } else if (addingTextBetweenAnchorBrackets) {
+            textBetweenAnchorBrackets.append(htmlEntityMap.get("-"));
+
+        } else {
+            this.OutString.append(htmlEntityMap.get("-"));
+        }
     }
 
     @Override
@@ -322,6 +349,24 @@ public class HtmlMdListener implements myMDToHTMLListener {
     @Override
     public void exitCarat(myMDToHTMLParser.CaratContext ctx) {
         this.OutString.append("^");
+    }
+
+    @Override
+    public void enterExclamationMark(myMDToHTMLParser.ExclamationMarkContext ctx) {
+
+    }
+
+    @Override
+    public void exitExclamationMark(myMDToHTMLParser.ExclamationMarkContext ctx) {
+        if (addingEndNotes) {
+            this.currentEndNoteString.append("!");
+
+        } else if (addingTextBetweenAnchorBrackets) {
+            textBetweenAnchorBrackets.append("!");
+
+        } else {
+            this.OutString.append("!");
+        }
     }
 
     @Override
