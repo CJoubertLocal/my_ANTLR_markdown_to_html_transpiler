@@ -18,13 +18,14 @@ markdownItem            : header
                         | image
                         | list
                         | link
+                        | parserSymbol
                         | default+
                         ;
 
-header                  : '#'+ (pound | default)+ ;
+header                  : '#'+ (parserSymbol | default)+ ;
 
 codeBlock               : '```' WORD NEWLINE codeBlockLine+ '```'                          # multilineCodeBlock // have all backquotes within a single string to avoid a mix-up with an inline code block
-                        | ('``' | '`' (default | verticalLine | pound | asterisk)+ '`')    # inlineCodeBlock
+                        | ('``' | '`' (default | parserSymbol)+ '`')    # inlineCodeBlock
                         ;
 
 italicsAndBold          : '*' '*' '*' (default | dash)+ '*' '*' '*' ;
@@ -41,7 +42,7 @@ image                   : '!' '[' '[' imageName ']' ']' ;
 
 list                    : ('-' listLine)+ ;
 
-listLine                : (codeBlock | italicsAndBold | bold | italics | footnote | link | default)+ NEWLINE ;
+listLine                : (codeBlock | italicsAndBold | bold | italics | footnote | link | parserSymbol | default)+ NEWLINE ;
 // The NEWLINE here requires that all lists at the end of a file have two NEWLINES if immediately before EOF. Otherwise, one NEWLINE before a new markdown item.
 table                   : tableHeader tableBorder tableBodyRow+ ;
 
@@ -77,14 +78,12 @@ default                 : WORD
                         | '['
                         | ']'
                         | ','
-                        | '!'
                         | '.'
                         | '_'
                         | ';'
                         | '/'
                         | '?'
                         | '='
-                        | '!'
                         | '@'
                         | '‘'
                         | '’'
@@ -94,12 +93,21 @@ default                 : WORD
                         | '%'
                         ;
 
-footnoteSentence        : (italicsAndBold | bold | italics | pound | default)+  NEWLINE* ;
+footnoteSentence        : (italicsAndBold | bold | italics | pound | exclamationMark | default)+  NEWLINE* ;
 // '#' included for urls
 
-imageName               : (WORD | '_')+ '.' WORD+ ;
+imageName               : (WORD | NUMBER | '_')+ '.' WORD+ ;
 
-codeBlockLine           : (default | verticalLine | asterisk | pound | backquote | carat)* NEWLINE ;
+codeBlockLine           : (default | parserSymbol)* NEWLINE ;
+
+parserSymbol            : pound
+                        | verticalLine
+                        | asterisk
+                        | dash
+                        | backquote
+                        | carat
+                        | exclamationMark
+                        ;
 
 pound                   : '#' ;
 
@@ -112,6 +120,8 @@ dash                    : '-' ;
 backquote               : '`' ;
 
 carat                   : '^' ;
+
+exclamationMark         : '!' ;
 
 /*
  * Lexer Rules
