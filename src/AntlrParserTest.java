@@ -3,8 +3,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AntlrParserTest {
-    String htmlStart = "<html><head><meta charset=\"UTF-8\"/></head><body><p>";
-    String htmlEnd = "</p></body></html>";
+    String htmlStart = "<html><head><meta charset=\"UTF-8\"/></head><body><div class=\"content\"><p>";
+    String htmlEnd = "</p></div></body></html>";
 
     String removeNewLineChars (String strIn) {
         return strIn.replaceAll(">\n", ">").replaceAll("\n<", "<");
@@ -330,7 +330,7 @@ class AntlrParserTest {
         );
         assertEquals(
                 htmlStart +
-                "Throwaway line</p><p>This paragraph references a footnote.<a id=\"footnote-anchor-1\" href=\"#footnote-1\">[1]</a></p><p><p id=\"footnote-1\"><a href=\"#footnote-anchor-1\">[1]</a> This is the reference, it has a url: https://this&ndash;is&ndash;not&ndash;a&ndash;real&ndash;url.blue/database?query=#a&ndash;query.</p>" +
+                "Throwaway line</p><p>This paragraph references a footnote.<a id=\"footnote-anchor-1\" href=\"#footnote-1\">[1]</a></p><p><p id=\"footnote-1\"><a href=\"#footnote-anchor-1\">[1]</a> This is the reference, it has a url: https://this-is-not-a-real-url.blue/database?query=#a-query.</p>" +
                 htmlEnd,
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
@@ -495,6 +495,16 @@ class AntlrParserTest {
                 removeNewLineChars(
                         AntlrParser.transpileMDToHTML(
                                 "# Introduction\n\n## A Small File\n\nThis is a *small* file. It contains - neigh - requires the program to correctly translate a variety of different Obsidian Markdown elements into the HTML elements I want.\n\n![[image_name.png]]\n\nFor example:\n\n- paragraphs[^1]\n- \"0 < 1\"\n- \"2 > 1\"\n- **and**\n- ***headings***\n- `Code blocks`\n\n```Pseudocode\nfn removeCharacterFromList(remList list, charToRemove char) list {\n    match remList {\n        case x::[]:\n            match x {\n                charToRemove: []\n                _: x\n            }\n        case x::xs:\n            match x {\n                charToRemove: removeCharacterFromList(xs, charToRemove)\n                _: x::removeCharacterFromList(xs, charToRemove)\n            }\n    }\n}\n\nremoveCharacterFromList(['a', 'b', 'c'], 'a')\n```\n\n## A table conclusion\n\nAnother footnote.[^2]\n\n| A table | must have | columns |\n|--|--|--|\n| and rows. | which may have an arbitrary amount of content | |\n\n[^1]: With footnotes!\n[^2]: Pseudocode.\n", ""
+                        )
+                )
+        );
+        assertEquals(
+                htmlStart +
+                "<h2> Introduction</h2></p><p><pre><code>\n![[image_name.png]]\n</code></pre>" +
+                htmlEnd,
+                removeNewLineChars(
+                        AntlrParser.transpileMDToHTML(
+                                "## Introduction\n\n```java\n\n![[image_name.png]]\n\n```\n", ""
                         )
                 )
         );
